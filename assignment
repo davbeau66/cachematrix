@@ -1,0 +1,73 @@
+## Functions to create a list object to hold a matrix and then cache its inverse
+
+## makeCacheMatrix creates a list object that holds a matrix and sets its inverse to null
+## Executing makeCacheMatrix will remove any existing inverse - it should only be used at the start of
+##  an R Programming session or when a new matrix is being stored
+
+makeCacheMatrix <- function(x = matrix()) {
+
+## Check to make sure input is a matrix 
+
+	if (!is.matrix(x)) {
+		stop("Input not a matrix")
+	}
+
+## Create a list oject to hold a matrix and its inverse and store in Home environment
+
+	mtx_lst <<- list( m = matrix(), m_inv = matrix())
+
+## Set matrix to input to function
+
+	mtx_lst$m <<- x
+
+## Set inverse to NULL, removing any previously cached inverse
+
+	mtx_lst$m_inv <<- NULL
+
+}
+
+## This function determines whether an inverse of a matrix has been cached, 
+##   if not it determines the inverse and caches it
+
+cacheSolve <- function(x, ...) {
+
+## Check to make sure input is a matrix 
+
+	if (!is.matrix(x)) {
+		stop("Input not a matrix")
+	}
+
+
+## Determine if matrix inverse has been cached. If not, determine inverse, cache it and return it
+
+## If the matrix input to the function is identical to the previously stored matrix.
+##   check to see if the inverse has already been cached.
+##   If yes, return the cached inverse.  If no, calculate the inverse, cache it and then return it.
+
+	if (identical(x,mtx_lst$m)) {
+		if (!is.null(mtx_lst$m_inv)) {
+			message("getting cached data")
+			invrs <- mtx_lst$m_inv
+		}
+		else {
+			invrs <- solve(x)
+			mtx_lst$m_inv <<- invrs
+		}
+					
+	}
+## If the input matrix doesn't match the stored matrix, store the new matrix i the list object,
+##    calculate the inverse, cache it and return it.
+	else {
+		mtx_lst$m_inv <<- NULL
+		mtx_lst$m <<- x
+		invrs <- solve(x)
+		mtx_lst$m_inv <<- invrs
+		
+	}
+	
+
+## Return a matrix that is the inverse of 'x'
+
+	return(invrs)
+
+}
